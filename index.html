@@ -62,14 +62,27 @@
       margin-bottom: 20px;
     }
 
-    .service h4 {
-      color: #2563eb;
+    /* انیمیشن برای تغییر رنگ و سایز فونت */
+    @keyframes changeTextStyle {
+      0% {
+        color: white;
+        font-size: 1rem;
+      }
+      50% {
+        color: #000; /* مشکی */
+        font-size: 1.2rem; /* فونت بزرگتر */
+      }
+      100% {
+        color: white;
+        font-size: 1rem;
+      }
     }
 
-    .service p {
-      font-size: 14px;
+    .service h4, .service p {
+      animation: changeTextStyle 2s ease-in-out infinite;
     }
 
+    /* برای نمایش بهتر در موبایل */
     @media (max-width: 768px) {
       .services {
         flex-direction: column;
@@ -79,33 +92,6 @@
       .service {
         width: 80%;
       }
-    }
-
-    .contact-form {
-      background-color: rgba(243, 244, 246, 0.8);
-      padding: 20px;
-      border-radius: 8px;
-      width: 40%;
-      margin: 0 auto;
-      text-align: left;
-    }
-
-    .contact-form input,
-    .contact-form textarea {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-    }
-
-    .contact-form button {
-      background-color: #2563eb;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
     }
 
     body.night {
