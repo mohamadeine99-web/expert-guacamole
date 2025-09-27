@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>طراحی سایت حرفه‌ای | YourSite</title>
-
+  
   <!-- اطلاعات متا برای بهینه‌سازی سئو -->
   <meta name="description" content="خدمات طراحی سایت حرفه‌ای، واکنش‌گرا و سئو شده برای گوگل.">
   <meta name="keywords" content="طراحی سایت, طراحی وب, سئو, سایت حرفه‌ای, توسعه وب">
   <meta name="author" content="YourSite">
-
+  
   <!-- Open Graph برای شبکه‌های اجتماعی -->
   <meta property="og:title" content="طراحی سایت حرفه‌ای | YourSite">
   <meta property="og:description" content="طراحی وب‌سایت واکنش‌گرا و سئو شده برای شما.">
@@ -17,22 +17,44 @@
   <meta property="og:url" content="https://mohamadeine99-web.github.io/expert-guacamole/">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@YourTwitterHandle">
-
+  
   <!-- تگ‌های دیگر برای سئو -->
   <meta name="robots" content="index, follow">
-
+  
   <style>
-    body { font-family: sans-serif; background: #f9fafb; margin: 0; padding: 0; text-align: center; }
-    header { background: #111827; color: white; padding: 1rem; }
-    main { padding: 2rem; }
-    footer { background: #111827; color: white; padding: 1rem; margin-top: 2rem; }
-    a { color: #2563eb; text-decoration: none; }
+    body {
+      font-family: sans-serif;
+      background: #f9fafb;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    header {
+      background: #111827;
+      color: white;
+      padding: 1rem;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+    main {
+      padding: 2rem;
+    }
+    footer {
+      background: #111827;
+      color: white;
+      padding: 1rem;
+      margin-top: 2rem;
+    }
 
     /* استایل برای بخش خدمات */
     .services {
       display: flex;
-      justify-content: space-around;
+      justify-content: space-between;
       margin-top: 40px;
+      flex-wrap: wrap;
     }
     .service {
       background-color: #f3f4f6;
@@ -40,12 +62,24 @@
       border-radius: 8px;
       width: 30%;
       text-align: center;
+      margin-bottom: 20px;
     }
     .service h4 {
       color: #2563eb;
     }
     .service p {
       font-size: 14px;
+    }
+
+    /* برای نمایش بهتر در موبایل */
+    @media (max-width: 768px) {
+      .services {
+        flex-direction: column;
+        align-items: center;
+      }
+      .service {
+        width: 80%;
+      }
     }
   </style>
 </head>
@@ -63,7 +97,7 @@
   <main>
     <h2>طراحی سایت حرفه‌ای و بهینه برای گوگل</h2>
     <p>ساخت وبسایت شرکتی، فروشگاهی و شخصی با قیمت مناسب و کیفیت عالی.</p>
-
+    
     <!-- بخش خدمات -->
     <h3 id="services">خدمات ما:</h3>
     <div class="services">
