@@ -92,35 +92,58 @@
       }
     }
 
-    /* Scroll to top button */
-    #scrollToTopBtn {
-      display: none;
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
+    /* استایل فرم تماس با ما */
+    .contact-form {
+      background-color: #f3f4f6;
+      padding: 20px;
+      border-radius: 8px;
+      width: 40%;
+      margin: 0 auto;
+      text-align: left;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    .contact-form button {
       background-color: #2563eb;
       color: white;
-      padding: 15px;
-      border-radius: 50%;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
       cursor: pointer;
-      font-size: 20px;
     }
 
-    /* When the button is visible */
-    #scrollToTopBtn.show {
-      display: block;
+    /* استایل شب */
+    body.night {
+      background-color: #2d2d2d;
+      color: #f3f4f6;
     }
 
-    /* انیمیشن fade */
-    h1 {
-      animation: fadeIn 2s ease-in-out;
+    header.night {
+      background: #333;
     }
 
-    @keyframes fadeIn {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
+    footer.night {
+      background: #333;
     }
 
+    /* دکمه تغییر شب و روز */
+    #toggleThemeBtn {
+      background-color: #2563eb;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
   </style>
 
   <script>
@@ -128,45 +151,26 @@
       // Fade-In Effect when page loads
       document.body.style.opacity = 1;
 
-      // An example for link animation
-      const homeLink = document.querySelector('a[href="/"]');
-      homeLink.addEventListener('click', function (event) {
-        event.preventDefault(); // Prevent immediate page load
-        document.body.style.opacity = 0; // Start fading out
-
-        setTimeout(function () {
-          window.location.href = homeLink.href; // After fade-out, redirect to home
-        }, 1000); // Sync fade-out duration with redirection
+      // تغییر تم شب و روز
+      const toggleThemeBtn = document.getElementById('toggleThemeBtn');
+      toggleThemeBtn.addEventListener('click', function () {
+        document.body.classList.toggle('night');
+        document.querySelector('header').classList.toggle('night');
+        document.querySelector('footer').classList.toggle('night');
       });
-
-      // Scroll to Top Button Logic
-      window.onscroll = function() {
-        let scrollToTopBtn = document.getElementById('scrollToTopBtn');
-        if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
-          scrollToTopBtn.classList.add('show');
-        } else {
-          scrollToTopBtn.classList.remove('show');
-        }
-      };
-
-      document.getElementById('scrollToTopBtn').onclick = function() {
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
-      };
     });
   </script>
+
 </head>
 <body>
+
   <header>
     <h1>YourSite</h1>
     <nav>
       <a href="/">خانه</a> |
       <a href="#about">درباره ما</a> |
       <a href="#services">خدمات</a> |
-      <a href="#contact">تماس با ما</a> |
-      <a href="best.html">بهترین‌ها حق شماست</a>
+      <a href="contact.html">تماس با ما</a>
     </nav>
   </header>
 
@@ -190,13 +194,23 @@
         <p>ما به شما در حفظ و به‌روزرسانی سایت‌تان کمک می‌کنیم تا همواره عملکرد بهینه داشته باشد.</p>
       </div>
     </div>
-  </main>
 
-  <!-- دکمه برگشت به بالا -->
-  <button id="scrollToTopBtn">↑</button>
+    <!-- فرم تماس با ما -->
+    <h3>تماس با ما</h3>
+    <form action="https://formspree.io/f/meorekzo" method="POST" class="contact-form">
+      <input type="text" name="name" placeholder="نام شما" required>
+      <input type="email" name="email" placeholder="ایمیل شما" required>
+      <textarea name="message" placeholder="پیام شما" rows="4" required></textarea>
+      <button type="submit">ارسال پیام</button>
+    </form>
+
+    <!-- دکمه تغییر تم -->
+    <button id="toggleThemeBtn">تغییر به حالت شب/روز</button>
+  </main>
 
   <footer>
     <p>&copy; 2025 YourSite - همه حقوق محفوظ است.</p>
   </footer>
+
 </body>
 </html>
