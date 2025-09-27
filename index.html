@@ -10,21 +10,11 @@
   <meta name="keywords" content="طراحی سایت, طراحی وب, سئو, سایت حرفه‌ای, توسعه وب">
   <meta name="author" content="YourSite">
 
-  <!-- Open Graph برای شبکه‌های اجتماعی -->
-  <meta property="og:title" content="طراحی سایت حرفه‌ای | YourSite">
-  <meta property="og:description" content="طراحی وب‌سایت واکنش‌گرا و سئو شده برای شما.">
-  <meta property="og:image" content="url_to_image.jpg"> <!-- لینک به تصویر -->
-  <meta property="og:url" content="https://mohamadeine99-web.github.io/expert-guacamole/">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@YourTwitterHandle">
-
-  <!-- تگ‌های دیگر برای سئو -->
-  <meta name="robots" content="index, follow">
-
   <style>
     body {
       font-family: sans-serif;
-      background: #f9fafb;
+      background: url('https://upload.wikimedia.org/wikipedia/commons/a/a2/Flag_of_Iran.svg') no-repeat center center fixed;
+      background-size: cover;
       margin: 0;
       padding: 0;
       text-align: center;
@@ -33,7 +23,7 @@
     }
 
     header {
-      background: #111827;
+      background: rgba(17, 24, 39, 0.7);
       color: white;
       padding: 1rem;
     }
@@ -46,16 +36,16 @@
 
     main {
       padding: 2rem;
+      color: white;
     }
 
     footer {
-      background: #111827;
+      background: rgba(17, 24, 39, 0.7);
       color: white;
       padding: 1rem;
       margin-top: 2rem;
     }
 
-    /* استایل برای بخش خدمات */
     .services {
       display: flex;
       justify-content: space-between;
@@ -64,7 +54,7 @@
     }
 
     .service {
-      background-color: #f3f4f6;
+      background-color: rgba(243, 244, 246, 0.8);
       padding: 20px;
       border-radius: 8px;
       width: 30%;
@@ -80,7 +70,6 @@
       font-size: 14px;
     }
 
-    /* برای نمایش بهتر در موبایل */
     @media (max-width: 768px) {
       .services {
         flex-direction: column;
@@ -92,9 +81,8 @@
       }
     }
 
-    /* استایل فرم تماس با ما */
     .contact-form {
-      background-color: #f3f4f6;
+      background-color: rgba(243, 244, 246, 0.8);
       padding: 20px;
       border-radius: 8px;
       width: 40%;
@@ -120,7 +108,6 @@
       cursor: pointer;
     }
 
-    /* استایل شب */
     body.night {
       background-color: #2d2d2d;
       color: #f3f4f6;
@@ -134,7 +121,6 @@
       background: #333;
     }
 
-    /* دکمه تغییر شب و روز */
     #toggleThemeBtn {
       background-color: #2563eb;
       color: white;
@@ -144,11 +130,21 @@
       cursor: pointer;
       margin-top: 20px;
     }
+
+    /* دکمه تغییر فونت و رنگ */
+    .theme-settings {
+      margin-top: 20px;
+    }
+
+    select, input[type="color"] {
+      padding: 8px;
+      margin: 5px;
+      border-radius: 4px;
+    }
   </style>
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      // Fade-In Effect when page loads
       document.body.style.opacity = 1;
 
       // تغییر تم شب و روز
@@ -157,6 +153,18 @@
         document.body.classList.toggle('night');
         document.querySelector('header').classList.toggle('night');
         document.querySelector('footer').classList.toggle('night');
+      });
+
+      // تغییر فونت
+      const fontSelector = document.getElementById('fontSelector');
+      fontSelector.addEventListener('change', function () {
+        document.body.style.fontFamily = fontSelector.value;
+      });
+
+      // تغییر رنگ پس‌زمینه
+      const colorPicker = document.getElementById('colorPicker');
+      colorPicker.addEventListener('input', function () {
+        document.body.style.backgroundColor = colorPicker.value;
       });
     });
   </script>
@@ -206,6 +214,19 @@
 
     <!-- دکمه تغییر تم -->
     <button id="toggleThemeBtn">تغییر به حالت شب/روز</button>
+
+    <!-- تنظیمات تغییر فونت و رنگ -->
+    <div class="theme-settings">
+      <label for="fontSelector">انتخاب فونت:</label>
+      <select id="fontSelector">
+        <option value="sans-serif">فونت پیش‌فرض</option>
+        <option value="serif">فونت سریف</option>
+        <option value="monospace">فونت مونو</option>
+      </select>
+
+      <label for="colorPicker">انتخاب رنگ پس‌زمینه:</label>
+      <input type="color" id="colorPicker" value="#f9fafb">
+    </div>
   </main>
 
   <footer>
