@@ -16,8 +16,7 @@
   <meta property="og:image" content="url_to_image.jpg">  <!-- لینک به تصویر -->
   <meta property="og:url" content="https://mohamadeine99-web.github.io/expert-guacamole/">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@Yo
-    urTwitterHandle">
+  <meta name="twitter:site" content="@YourTwitterHandle">
 
   <!-- تگ‌های دیگر برای سئو -->
   <meta name="robots" content="index, follow">
@@ -28,30 +27,61 @@
     main { padding: 2rem; }
     footer { background: #111827; color: white; padding: 1rem; margin-top: 2rem; }
     a { color: #2563eb; text-decoration: none; }
+
+    /* استایل برای بخش خدمات */
+    .services {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 40px;
+    }
+    .service {
+      background-color: #f3f4f6;
+      padding: 20px;
+      border-radius: 8px;
+      width: 30%;
+      text-align: center;
+    }
+    .service h4 {
+      color: #2563eb;
+    }
+    .service p {
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
   <header>
     <h1>YourSite</h1>
     <nav>
-      <a href="/">خانه</a> | 
-      <a href="#about">درباره ما</a> | 
-      <a href="#services">خدمات</a> | 
+      <a href="/">خانه</a> |
+      <a href="#about">درباره ما</a> |
+      <a href="#services">خدمات</a> |
       <a href="#contact">تماس با ما</a>
     </nav>
   </header>
+
   <main>
     <h2>طراحی سایت حرفه‌ای و بهینه برای گوگل</h2>
     <p>ساخت وبسایت شرکتی، فروشگاهی و شخصی با قیمت مناسب و کیفیت عالی.</p>
-    <h3>خدمات ما:</h3>
-    <ul>
-      <li>طراحی سایت واکنش‌گرا</li>
-      <li>سئو و بهینه‌سازی برای موتورهای جستجو</li>
-      <li>پشتیبانی و نگهداری وب‌سایت</li>
-    </ul>
-    <h3 id="contact">تماس با ما:</h3>
-    <p>برای مشاوره و سفارش طراحی سایت با ما تماس بگیرید!</p>
+
+    <!-- بخش خدمات -->
+    <h3 id="services">خدمات ما:</h3>
+    <div class="services">
+      <div class="service">
+        <h4>طراحی سایت واکنش‌گرا</h4>
+        <p>ما وب‌سایت‌هایی طراحی می‌کنیم که در تمامی دستگاه‌ها به درستی نمایش داده شوند.</p>
+      </div>
+      <div class="service">
+        <h4>سئو و بهینه‌سازی</h4>
+        <p>سایت شما را برای موتورهای جستجو بهینه‌سازی می‌کنیم تا در نتایج گوگل رتبه بالاتری داشته باشد.</p>
+      </div>
+      <div class="service">
+        <h4>پشتیبانی و نگهداری</h4>
+        <p>ما به شما در حفظ و به‌روزرسانی سایت‌تان کمک می‌کنیم تا همواره عملکرد بهینه داشته باشد.</p>
+      </div>
+    </div>
   </main>
+
   <footer>
     <p>&copy; 2025 YourSite - همه حقوق محفوظ است.</p>
   </footer>
