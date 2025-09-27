@@ -3,19 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>طراحی سایت حرفه‌ای | YourSite</title>
-  <meta name="description" content="خدمات طراحی سایت حرفه‌ای، واکنش‌گرا و سئو شده برای گوگل.">
-  <meta name="keywords" content="طراحی سایت, طراحی وب, سئو, سایت حرفه‌ای">
-
-  <!-- کد تأیید گوگل -->
-  <meta name="google-site-verification" content="S6xM0dF_TTSKtqRufy8fDCq3AY9BNUm2IApouu56i14" />
-  
+  <title>تماس با ما | YourSite</title>
+  <meta name="description" content="تماس با تیم ما برای طراحی سایت و مشاوره.">
+  <meta name="keywords" content="تماس با ما, طراحی سایت, YourSite, ارتباط با تیم">
   <style>
     body { font-family: sans-serif; background: #f9fafb; margin: 0; padding: 0; text-align: center; }
     header { background: #111827; color: white; padding: 1rem; }
     main { padding: 2rem; }
     footer { background: #111827; color: white; padding: 1rem; margin-top: 2rem; }
-    a { color: #2563eb; text-decoration: none; }
+    form { display: flex; flex-direction: column; align-items: center; margin-top: 20px; }
+    input, textarea { width: 300px; padding: 10px; margin: 10px 0; }
+    button { background-color: #2563eb; color: white; padding: 10px 20px; border: none; cursor: pointer; }
+    button:hover { background-color: #1e40af; }
   </style>
 </head>
 <body>
@@ -23,9 +22,14 @@
     <h1>YourSite</h1>
   </header>
   <main>
-    <h2>طراحی سایت حرفه‌ای و بهینه برای گوگل</h2>
-    <p>ساخت وبسایت شرکتی، فروشگاهی و شخصی با قیمت مناسب و کیفیت عالی.</p>
-    <a href="#contact">تماس با ما</a>
+    <h2>تماس با ما</h2>
+    <p>لطفاً فرم زیر را پر کنید تا با شما تماس بگیریم.</p>
+    <form action="#" method="POST">
+      <input type="text" name="name" placeholder="نام شما" required>
+      <input type="email" name="email" placeholder="ایمیل شما" required>
+      <textarea name="message" placeholder="پیام شما" rows="4" required></textarea>
+      <button type="submit">ارسال پیام</button>
+    </form>
   </main>
   <footer>
     © 2025 YourSite - همه حقوق محفوظ است.
