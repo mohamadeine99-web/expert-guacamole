@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>پنل مدیریت</title>
+  <style>
+    body { font-family: sans-serif; direction: rtl; text-align: center; }
+    .hidden { display: none; }
+    input, select, button { margin: 5px; padding: 8px; }
+    img { width: 100px; margin: 5px; }
+    .product { border: 1px solid #ccc; margin: 10px; padding: 10px; }
+  </style>
+</head>
+<body>
+
+  <h1>پنل مدیریت فروشگاه</h1>
+
+  <!-- فرم ورود -->
+  <div id="loginDiv">
+    <h3>ورود ادمین</h3>
+    <input type="email" id="email" placeholder="ایمیل"><br>
+    <input type="password" id="password" placeholder="رمز عبور"><br>
+    <button id="loginBtn">ورود</button>
+  </div>
+
+  <!-- پنل مدیریت -->
+  <div id="adminPanel" class="hidden">
+    <button id="logoutBtn">خروج</button>
+    <h3>افزودن محصول جدید</h3>
+    <input type="text" id="pname" placeholder="نام محصول"><br>
+    <textarea id="pdesc" placeholder="توضیحات محصول"></textarea><br>
+    <select id="pcar">
+      <option value="پیکان">پیکان</option>
+      <option value="پراید">پراید</option>
+      <option value="پژو 405">پژو 405</option>
+      <option value="پژو 206">پژو 206</option>
+      <option value="رنو L90">رنو L90</option>
+      <option value="تیبا">تیبا</option>
+      <option value="ساینا">ساینا</option>
+      <option value="کوییک">کوییک</option>
+    </select><br>
+    <input type="file" id="pimage"><br>
+    <button id="addProductBtn">افزودن محصول</button>
+
+    <h3>محصولات موجود</h3>
+    <div id="productList"></div>
+  </div>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-storage.js";
+
+    // پیکربندی پروژه تو
+    const firebaseConfig = {
+      apiKey: "AIzaSyDhpg4IakcXJ9AuDQabyJifOAu1G12x38o",
+      authDomain: "mohamad-1473c.firebaseapp.com",
+      projectId: "mohamad-1473c",
+      storageBucket: "mohamad-1473c.firebasestorage.app",
+      messagingSenderId: "174549108595",
+      appId: "1:174549108595:web:c65e29101d41e76ea42706",
+      measurementId: "G-DC0NQYPE3J"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    const storage = getStorage(app);
+
+    // عناصر
+    const loginDiv = document.getElementById("loginDiv");
+    const adminPanel = document.getElementById("adminPanel");
+    const loginBtn = document.getElementById("loginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const addProductBtn = document.getElementById("addProductBtn");
+    const productList = document.getElementById("productList");
+
+    // ورود
+    loginBtn.onclick = async () => {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        alert("ورود موفق!");
+      } catch (err) {
+        alert("خطا: " + err.message);
+      }
+    };
+
+    // خروج
+    logoutBtn.onclick = async () => {
+      await signOut(auth);
+    };
+
+    // تغییر وضعیت ورود
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        loginDiv.classList.add("hidden");
+        adminPanel.classList.remove("hidden");
+        loadProducts();
+      } else {
+        loginDiv.classList.remove("hidden");
+        adminPanel.classList.add("hidden");
+      }
+    });
+
+    // افزودن محصول
+    addProductBtn.onclick = async () => {
+      const name = document.getElementById("pname").value;
+      const desc = document.getElementById("pdesc").value;
+      const car = document.getElementById("pcar").value;
+      const file = document.getElementById("pimage").files[0];
+
+      if (!name || !desc || !file) {
+        alert("لطفا همه فیلدها را پر کنید!");
+        return;
+      }
+
+      // آپلود عکس
+      const storageRef = ref(storage, "products/" + file.name);
+      await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(storageRef);
+
+      // ذخیره در Firestore
+      await addDoc(collection(db, "products"), {
+        name, desc, car, image: url, created: new Date()
+      });
+
+      alert("محصول اضافه شد!");
+      loadProducts();
+    };
+
+    // نمایش محصولات
+    async function loadProducts() {
+      productList.innerHTML = "";
+      const querySnapshot = await getDocs(collection(db, "products"));
+      querySnapshot.forEach((doc) => {
+        const p = doc.data();
+        productList.innerHTML += `
+          <div class="product">
+            <h4>${p.name}</h4>
+            <p>${p.desc}</p>
+            <p><b>ماشین:</b> ${p.car}</p>
+            <img src="${p.image}">
+          </div>
+        `;
+      });
+    }
+  </script>
+</body>
+</html>
