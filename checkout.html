@@ -1,73 +1,53 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>تکمیل سفارش — شایان</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"><style>body{font-family:Vazirmatn,system-ui,sans-serif;background:#f6f8fb;color:#0f172a} header{background:#0f172a;color:#fff;padding:12px;text-align:center}.note{background:#fff;padding:12px;border-radius:8px;margin-bottom:12px}</style></head>
-<body>
-<header><h3>اطلاعات خریدار</h3></header>
-<main class="container py-4">
-  <div class="note">
-    <strong>توجه:</strong> پس از ارسال، واتساپ باز می‌شود و پیام سفارش برای فروشنده آماده می‌شود. (شماره فروشنده در لینک واتساپ استفاده می‌شود)
-  </div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  <div class="card p-3">
-    <form id="checkoutForm">
-      <div class="mb-3">
-        <label class="form-label">نام و نام خانوادگی</label>
-        <input type="text" id="buyerName" class="form-control" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">شماره تلفن (با پیش شماره، مثال: 98912...)</label>
-        <input type="text" id="buyerPhone" class="form-control" placeholder="989*********" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">توضیحات (اختیاری)</label>
-        <textarea id="buyerNote" class="form-control" rows="3"></textarea>
-      </div>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDhpg4IakcXJ9AuDQabyJifOAu1G12x38o",
+    authDomain: "mohamad-1473c.firebaseapp.com",
+    projectId: "mohamad-1473c",
+    storageBucket: "mohamad-1473c.firebasestorage.app",
+    messagingSenderId: "174549108595",
+    appId: "1:174549108595:web:c65e29101d41e76ea42706",
+    measurementId: "G-DC0NQYPE3J"
+  };
 
-      <div class="d-flex gap-2">
-        <button type="submit" class="btn btn-success">ارسال سفارش و ارسال پیام به واتساپ</button>
-        <a class="btn btn-secondary" href="cart.html">بازگشت به سبد خرید</a>
-      </div>
-    </form>
-    <div id="result" class="mt-3" style="display:none"></div>
-  </div>
-</main>
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-<script>
-  const SELLER_WA = "989918263754"; // شماره فروشنده (از شما) — برای لینک واتساپ
-
-  function getCart(){ return JSON.parse(localStorage.getItem("shop_cart_v1") || "[]"); }
-
-  document.getElementById("checkoutForm").addEventListener("submit", function(e){
+  document.getElementById("checkoutForm").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const name = document.getElementById("buyerName").value.trim();
-    const phone = document.getElementById("buyerPhone").value.trim();
-    const note = document.getElementById("buyerNote").value.trim();
-    const cart = getCart();
-    if(cart.length===0){ alert("سبد خرید خالی است."); location.href="cart.html"; return; }
 
-    let msg = `سفارش جدید از سایت پخش لوازم یدکی شایان\n`;
-    msg += `نام خریدار: ${name}\n`;
-    msg += `تلفن: ${phone}\n`;
-    if(note) msg += `یادداشت: ${note}\n`;
-    msg += `\nمحصولات:\n`;
-    cart.forEach(it=>{ msg += `- ${it.title} (تعداد: ${it.qty})\n`; });
-    msg += `\nلطفا جهت تماس اقدام کنید.`;
+    const name = document.getElementById("name").value;
+    const phone = document.getElementById("phone").value;
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-    // ذخیره محلی سفارش (اختیاری)
-    const orders = JSON.parse(localStorage.getItem("orders_v1")||"[]");
-    orders.push({ts:new Date().toISOString(), name, phone, note, cart});
-    localStorage.setItem("orders_v1", JSON.stringify(orders));
+    try {
+      // ذخیره سفارش در Firestore
+      await addDoc(collection(db, "orders"), {
+        name,
+        phone,
+        cart,
+        createdAt: serverTimestamp()
+      });
 
-    // لینک واتساپ — این لینک حاوی شماره فروشنده است (در محیط استاتیک بدون سرور ناچاریم)
-    const waLink = `https://wa.me/${SELLER_WA}?text=${encodeURIComponent(msg)}`;
-    window.open(waLink, "_blank");
+      // ارسال به واتساپ (مثل قبل)
+      let message = `سفارش جدید:%0A`;
+      message += `نام: ${name}%0A`;
+      message += `شماره: ${phone}%0A`;
+      message += `محصولات:%0A`;
+      cart.forEach(item => {
+        message += `- ${item.name}%0A`;
+      });
 
-    // پاک کردن سبد
-    localStorage.removeItem("shop_cart_v1");
+      window.open(`https://wa.me/989918263754?text=${message}`, "_blank");
 
-    // ریدایرکت به صفحه موفقیت بعد از تاخیر کوتاه
-    setTimeout(()=> location.href = "success.html", 800);
+      alert("سفارش شما ثبت شد ✅");
+      localStorage.removeItem("cart");
+      window.location.href = "shop.html";
+    } catch (error) {
+      console.error("خطا در ذخیره سفارش:", error);
+      alert("مشکلی پیش آمد، دوباره امتحان کنید.");
+    }
   });
 </script>
-</body>
-</html>
