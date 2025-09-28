@@ -2,35 +2,35 @@
 <html lang="fa">
 <head>
   <meta charset="UTF-8">
-  <title>فروشگاه محصولات</title>
+  <title>فروشگاه قطعات خودرو</title>
   <style>
     body { font-family: sans-serif; background: #f9f9f9; padding: 20px; }
-    h1 { text-align: center; color: #333; }
-    .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
-    .product { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 0 6px #ccc; text-align: center; }
-    img { max-width: 100%; height: 150px; object-fit: contain; margin-bottom: 10px; }
-    button { background: #28a745; color: white; padding: 8px; border: none; border-radius: 5px; cursor: pointer; }
-    button:hover { background: #218838; }
-    .cart-link { display: block; text-align: center; margin-top: 20px; font-size: 18px; color: blue; text-decoration: none; }
+    h1 { text-align: center; }
+    .products { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 20px; }
+    .card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 0 6px #aaa; text-align: center; }
+    img { max-width: 100%; border-radius: 5px; }
+    button { margin-top: 10px; background: green; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+    button:hover { background: darkgreen; }
+    #cartLink { display: block; text-align: center; margin-top: 20px; font-weight: bold; }
   </style>
 </head>
 <body>
-  <h1>🛒 فروشگاه ما</h1>
+  <h1>🛒 فروشگاه قطعات خودرو</h1>
+  <div class="products" id="products"></div>
 
-  <div class="products" id="productsList"></div>
+  <a href="checkout.html" id="cartLink">رفتن به سبد خرید</a>
 
-  <a class="cart-link" href="cart.html">رفتن به سبد خرید</a>
-
+  <!-- Firebase SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // --- تنظیمات پروژه خودت ---
+    // 🟢 تنظیمات Firebase
     const firebaseConfig = {
-      apiKey: "AIza....", 
+      apiKey: "AIzaSyDhpg4IakcXJ9AuDQabyJifOAu1G12x38o",
       authDomain: "mohamad-1473c.firebaseapp.com",
       projectId: "mohamad-1473c",
-      storageBucket: "mohamad-1473c.appspot.com",
+      storageBucket: "mohamad-1473c.firebasestorage.app",
       messagingSenderId: "174549108595",
       appId: "1:174549108595:web:c65e29101d41e76ea42706",
       measurementId: "G-DC0NQYPE3J"
@@ -39,33 +39,34 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    const productsList = document.getElementById("productsList");
+    // 🛒 مدیریت سبد خرید
+    function addToCart(product) {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cart.push(product);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      alert("✅ محصول به سبد خرید اضافه شد");
+    }
 
-    // 📌 گرفتن محصولات از دیتابیس
+    // 📦 لود محصولات از Firestore
     async function loadProducts() {
+      const productsDiv = document.getElementById("products");
+      productsDiv.innerHTML = "";
       const querySnapshot = await getDocs(collection(db, "products"));
-      productsList.innerHTML = "";
       querySnapshot.forEach((docSnap) => {
         const data = docSnap.data();
-
         const div = document.createElement("div");
-        div.className = "product";
+        div.classList.add("card");
         div.innerHTML = `
-          <img src="${data.imageUrl}" alt="${data.name}">
+          <img src="${data.image}" alt="${data.name}">
           <h3>${data.name}</h3>
           <p>${data.desc}</p>
-          <button>➕ افزودن به سبد</button>
+          <p><strong>${data.price} تومان</strong></p>
+          <button>➕ افزودن به سبد خرید</button>
         `;
-
-        // 📌 دکمه افزودن به سبد
         div.querySelector("button").addEventListener("click", () => {
-          let cart = JSON.parse(localStorage.getItem("cart")) || [];
-          cart.push({ name: data.name, desc: data.desc, imageUrl: data.imageUrl });
-          localStorage.setItem("cart", JSON.stringify(cart));
-          alert("✅ محصول به سبد خرید اضافه شد.");
+          addToCart({ id: docSnap.id, name: data.name, price: data.price });
         });
-
-        productsList.appendChild(div);
+        productsDiv.appendChild(div);
       });
     }
 
