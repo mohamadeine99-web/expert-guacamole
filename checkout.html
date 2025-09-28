@@ -4,35 +4,51 @@
   <meta charset="UTF-8">
   <title>ثبت سفارش</title>
   <style>
-    body { font-family: sans-serif; background: #f9f9f9; text-align: center; }
-    #checkoutBox { max-width: 500px; margin: 30px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 0 10px #ccc; }
-    input, textarea, button { width: 90%; margin: 10px 0; padding: 10px; border-radius: 6px; border: 1px solid #ccc; }
-    button { background: green; color: white; border: none; cursor: pointer; }
+    body { font-family: sans-serif; background: #f5f5f5; padding: 20px; }
+    h1 { text-align: center; }
+    .checkout { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 6px #aaa; }
+    .cart-item { border-bottom: 1px solid #ddd; padding: 10px 0; }
+    .form-group { margin: 15px 0; }
+    label { display: block; margin-bottom: 5px; }
+    input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; }
+    button { background: green; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; }
     button:hover { background: darkgreen; }
+    .success { text-align: center; color: green; margin-top: 15px; }
   </style>
 </head>
 <body>
-  <div id="checkoutBox">
-    <h2>🛒 تکمیل سفارش</h2>
-    <form id="checkoutForm">
-      <input type="text" id="name" placeholder="نام و نام خانوادگی" required>
-      <input type="text" id="phone" placeholder="شماره تماس" required>
-      <textarea id="address" placeholder="آدرس کامل" required></textarea>
-      <button type="submit">ثبت سفارش ✅</button>
+  <h1>✅ ثبت سفارش</h1>
+
+  <div class="checkout">
+    <h3>سبد خرید شما:</h3>
+    <div id="cartSummary"></div>
+
+    <form id="orderForm">
+      <div class="form-group">
+        <label>نام:</label>
+        <input type="text" id="name" required>
+      </div>
+      <div class="form-group">
+        <label>شماره تلفن:</label>
+        <input type="tel" id="phone" required>
+      </div>
+      <button type="submit">ثبت سفارش</button>
     </form>
-    <p id="message"></p>
+
+    <div id="message"></div>
   </div>
 
+  <!-- Firebase SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // --- تنظیمات پروژه خودت ---
+    // 🟢 تنظیمات Firebase (همون که قبلاً دادی)
     const firebaseConfig = {
-      apiKey: "AIza....",  // 🔑 API Key خودت
+      apiKey: "AIzaSyDhpg4IakcXJ9AuDQabyJifOAu1G12x38o",
       authDomain: "mohamad-1473c.firebaseapp.com",
       projectId: "mohamad-1473c",
-      storageBucket: "mohamad-1473c.appspot.com",
+      storageBucket: "mohamad-1473c.firebasestorage.app",
       messagingSenderId: "174549108595",
       appId: "1:174549108595:web:c65e29101d41e76ea42706",
       measurementId: "G-DC0NQYPE3J"
@@ -41,33 +57,55 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // شبیه‌سازی سبد خرید (میتونی از localStorage بگیری)
-    let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    // 🛒 نمایش خلاصه سبد خرید
+    function loadCart() {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const cartSummary = document.getElementById("cartSummary");
+      cartSummary.innerHTML = "";
 
-    const form = document.getElementById("checkoutForm");
-    const message = document.getElementById("message");
+      if (cart.length === 0) {
+        cartSummary.innerHTML = "<p>سبد خرید خالی است.</p>";
+        return;
+      }
 
-    form.addEventListener("submit", async (e) => {
+      cart.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "cart-item";
+        div.innerHTML = `<strong>${item.name}</strong> - ${item.desc}`;
+        cartSummary.appendChild(div);
+      });
+    }
+
+    loadCart();
+
+    // 📌 ذخیره سفارش در Firestore
+    document.getElementById("orderForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const name = document.getElementById("name").value;
-      const phone = document.getElementById("phone").value;
-      const address = document.getElementById("address").value;
+
+      const name = document.getElementById("name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+      if (cart.length === 0) {
+        alert("سبد خرید خالی است!");
+        return;
+      }
 
       try {
         await addDoc(collection(db, "orders"), {
           name,
           phone,
-          address,
           cart,
-          status: "جدید", // وضعیت پیش‌فرض سفارش
+          status: "جدید", // 🟢 وضعیت پیش‌فرض
           createdAt: serverTimestamp()
         });
 
-        message.textContent = "✅ سفارش شما با موفقیت ثبت شد.";
-        form.reset();
-        localStorage.removeItem("cart"); // سبد خرید خالی میشه
-      } catch (err) {
-        message.textContent = "❌ خطا در ثبت سفارش: " + err.message;
+        document.getElementById("message").innerHTML = `<p class="success">✅ سفارش با موفقیت ثبت شد!</p>`;
+        localStorage.removeItem("cart"); // 🧹 خالی کردن سبد
+        document.getElementById("orderForm").reset();
+        document.getElementById("cartSummary").innerHTML = "<p>سبد خرید خالی است.</p>";
+      } catch (error) {
+        alert("❌ خطا در ثبت سفارش: " + error.message);
       }
     });
   </script>
