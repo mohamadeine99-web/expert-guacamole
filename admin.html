@@ -2,62 +2,43 @@
 <html lang="fa">
 <head>
   <meta charset="UTF-8">
-  <title>پنل مدیریت</title>
+  <title>مدیریت سفارش‌ها</title>
   <style>
     body { font-family: sans-serif; background: #f0f0f0; padding: 20px; }
     h1 { text-align: center; }
-    .section { background: white; padding: 20px; margin: 20px auto; border-radius: 8px; max-width: 800px; box-shadow: 0 0 6px #aaa; }
-    .form-group { margin: 10px 0; }
-    label { display: block; margin-bottom: 5px; }
-    input, textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; }
-    button { background: blue; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
-    button:hover { background: darkblue; }
+    .login, .admin-panel { max-width: 700px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 6px #aaa; }
+    input, button { padding: 10px; margin: 5px 0; width: 100%; border-radius: 5px; border: 1px solid #ccc; }
+    button { background: green; color: white; cursor: pointer; }
+    button:hover { background: darkgreen; }
     ul { list-style: none; padding: 0; }
     li { padding: 10px; border-bottom: 1px solid #ddd; }
-    img { max-width: 100px; display: block; margin-top: 5px; }
+    .actions { margin-top: 10px; }
+    .actions button { width: auto; margin-right: 5px; }
   </style>
 </head>
 <body>
-  <h1>📌 پنل مدیریت</h1>
+  <h1>🔑 مدیریت سفارش‌ها</h1>
 
-  <!-- 🟢 بخش سفارش‌ها -->
-  <div class="section">
-    <h2>مدیریت سفارش‌ها</h2>
-    <ul id="ordersList"></ul>
+  <!-- فرم ورود -->
+  <div class="login" id="loginBox">
+    <h3>ورود مدیر</h3>
+    <input type="email" id="adminEmail" placeholder="ایمیل مدیر">
+    <input type="password" id="adminPassword" placeholder="رمز عبور">
+    <button id="loginBtn">ورود</button>
   </div>
 
-  <!-- 🟢 بخش محصولات -->
-  <div class="section">
-    <h2>مدیریت محصولات</h2>
-    <form id="productForm">
-      <div class="form-group">
-        <label>نام محصول:</label>
-        <input type="text" id="pname" required>
-      </div>
-      <div class="form-group">
-        <label>توضیحات:</label>
-        <textarea id="pdesc" required></textarea>
-      </div>
-      <div class="form-group">
-        <label>قیمت:</label>
-        <input type="number" id="pprice" required>
-      </div>
-      <div class="form-group">
-        <label>عکس محصول:</label>
-        <input type="file" id="pimage" accept="image/*" required>
-      </div>
-      <button type="submit">➕ افزودن محصول</button>
-    </form>
-
-    <h3>لیست محصولات:</h3>
-    <ul id="productsList"></ul>
+  <!-- پنل مدیریت -->
+  <div class="admin-panel" id="adminPanel" style="display:none;">
+    <h3>لیست سفارش‌ها</h3>
+    <ul id="ordersList"></ul>
+    <button id="logoutBtn">خروج</button>
   </div>
 
   <!-- Firebase SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, collection, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     // 🟢 تنظیمات Firebase
     const firebaseConfig = {
@@ -71,106 +52,84 @@
     };
 
     const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
     const db = getFirestore(app);
-    const storage = getStorage(app);
 
-    /* ================== 🛒 مدیریت سفارش‌ها ================== */
+    const loginBox = document.getElementById("loginBox");
+    const adminPanel = document.getElementById("adminPanel");
+    const loginBtn = document.getElementById("loginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const ordersList = document.getElementById("ordersList");
+
+    // 🟢 ورود مدیر
+    loginBtn.addEventListener("click", async () => {
+      const email = document.getElementById("adminEmail").value;
+      const password = document.getElementById("adminPassword").value;
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        alert("✅ ورود موفق!");
+      } catch (error) {
+        alert("❌ خطا در ورود: " + error.message);
+      }
+    });
+
+    // 🟢 خروج
+    logoutBtn.addEventListener("click", async () => {
+      await signOut(auth);
+    });
+
+    // 🟢 بررسی وضعیت ورود
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        loginBox.style.display = "none";
+        adminPanel.style.display = "block";
+        loadOrders();
+      } else {
+        loginBox.style.display = "block";
+        adminPanel.style.display = "none";
+      }
+    });
+
+    // 🟢 گرفتن و نمایش سفارش‌ها
     async function loadOrders() {
-      const ordersList = document.getElementById("ordersList");
       ordersList.innerHTML = "";
       const querySnapshot = await getDocs(collection(db, "orders"));
       querySnapshot.forEach((docSnap) => {
         const data = docSnap.data();
         const li = document.createElement("li");
+
         li.innerHTML = `
           <strong>${data.name}</strong> (${data.phone}) <br>
           محصولات: ${data.cart.map(i => i.name).join(", ")} <br>
           وضعیت: <span style="color:blue">${data.status}</span>
-          <br>
-          <button class="delete-btn">❌ حذف</button>
-          <button class="status-btn">🔄 تغییر وضعیت</button>
+          <div class="actions">
+            <button class="delete-btn">❌ حذف</button>
+            <button class="status-btn">🔄 تغییر وضعیت</button>
+          </div>
         `;
-        // دکمه حذف
+
+        // حذف سفارش
         li.querySelector(".delete-btn").addEventListener("click", async () => {
           if (confirm("آیا مطمئن هستی می‌خواهی این سفارش حذف شود؟")) {
             await deleteDoc(doc(db, "orders", docSnap.id));
             loadOrders();
           }
         });
-        // دکمه تغییر وضعیت
+
+        // تغییر وضعیت
         li.querySelector(".status-btn").addEventListener("click", async () => {
           let newStatus;
           if (data.status === "جدید") newStatus = "در حال پردازش";
           else if (data.status === "در حال پردازش") newStatus = "ارسال شد";
           else newStatus = "جدید";
+
           await updateDoc(doc(db, "orders", docSnap.id), { status: newStatus });
           loadOrders();
         });
+
         ordersList.appendChild(li);
       });
     }
-
-    /* ================== 📦 مدیریت محصولات ================== */
-    async function loadProducts() {
-      const productsList = document.getElementById("productsList");
-      productsList.innerHTML = "";
-      const querySnapshot = await getDocs(collection(db, "products"));
-      querySnapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        const li = document.createElement("li");
-        li.innerHTML = `
-          <strong>${data.name}</strong> - ${data.price} تومان <br>
-          ${data.desc} <br>
-          <img src="${data.image}" alt="${data.name}">
-          <br>
-          <button class="delete-btn">❌ حذف</button>
-        `;
-        // حذف محصول
-        li.querySelector(".delete-btn").addEventListener("click", async () => {
-          if (confirm("حذف محصول؟")) {
-            await deleteDoc(doc(db, "products", docSnap.id));
-            loadProducts();
-          }
-        });
-        productsList.appendChild(li);
-      });
-    }
-
-    // افزودن محصول جدید
-    document.getElementById("productForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const name = document.getElementById("pname").value.trim();
-      const desc = document.getElementById("pdesc").value.trim();
-      const price = document.getElementById("pprice").value.trim();
-      const file = document.getElementById("pimage").files[0];
-
-      if (!file) {
-        alert("لطفاً عکس محصول را انتخاب کنید!");
-        return;
-      }
-
-      try {
-        // آپلود عکس در Storage
-        const storageRef = ref(storage, "products/" + Date.now() + "_" + file.name);
-        await uploadBytes(storageRef, file);
-        const imageUrl = await getDownloadURL(storageRef);
-
-        // ذخیره محصول در Firestore
-        await addDoc(collection(db, "products"), {
-          name, desc, price, image: imageUrl, createdAt: serverTimestamp()
-        });
-
-        alert("✅ محصول با موفقیت اضافه شد!");
-        document.getElementById("productForm").reset();
-        loadProducts();
-      } catch (err) {
-        alert("❌ خطا: " + err.message);
-      }
-    });
-
-    // اجرای اولیه
-    loadOrders();
-    loadProducts();
   </script>
 </body>
 </html>
