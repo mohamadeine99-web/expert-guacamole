@@ -2,99 +2,39 @@
 <html lang="fa">
 <head>
   <meta charset="UTF-8">
-  <title>تسویه حساب</title>
-  <style>
-    body { font-family: sans-serif; background: #f4f4f4; padding: 20px; }
-    h1 { text-align: center; }
-    .cart { margin: 20px auto; max-width: 600px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 0 6px #aaa; }
-    ul { list-style: none; padding: 0; }
-    li { padding: 8px; border-bottom: 1px solid #ddd; }
-    form { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
-    input, button { padding: 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px; }
-    button { background: green; color: white; cursor: pointer; }
-    button:hover { background: darkgreen; }
-  </style>
+  <title>محصولات</title>
 </head>
 <body>
-  <h1>🛍 تسویه حساب</h1>
+  <h2>🛒 محصولات</h2>
+  <ul id="productsList">
+    <li>
+      <span>لنت ترمز پراید</span>
+      <button class="add-to-cart" data-name="لنت ترمز پراید">➕ افزودن به سبد</button>
+    </li>
+    <li>
+      <span>چراغ جلو پژو 405</span>
+      <button class="add-to-cart" data-name="چراغ جلو پژو 405">➕ افزودن به سبد</button>
+    </li>
+    <li>
+      <span>رادیاتور پژو 206</span>
+      <button class="add-to-cart" data-name="رادیاتور پژو 206">➕ افزودن به سبد</button>
+    </li>
+  </ul>
 
-  <div class="cart">
-    <h3>سبد خرید شما</h3>
-    <ul id="cartList"></ul>
-  </div>
+  <a href="checkout.html">رفتن به سبد خرید</a>
 
-  <form id="checkoutForm">
-    <input type="text" id="name" placeholder="نام شما" required>
-    <input type="tel" id="phone" placeholder="شماره تلفن" required>
-    <button type="submit">ثبت سفارش</button>
-  </form>
+  <script>
+    // مدیریت سبد خرید
+    document.querySelectorAll(".add-to-cart").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const name = btn.dataset.name;
 
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        cart.push({ name });
+        localStorage.setItem("cart", JSON.stringify(cart));
 
-    // 🟢 تنظیمات Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyDhpg4IakcXJ9AuDQabyJifOAu1G12x38o",
-      authDomain: "mohamad-1473c.firebaseapp.com",
-      projectId: "mohamad-1473c",
-      storageBucket: "mohamad-1473c.firebasestorage.app",
-      messagingSenderId: "174549108595",
-      appId: "1:174549108595:web:c65e29101d41e76ea42706",
-      measurementId: "G-DC0NQYPE3J"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    // 📦 گرفتن سبد خرید
-    const cartList = document.getElementById("cartList");
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-    function renderCart() {
-      cartList.innerHTML = "";
-      if (cart.length === 0) {
-        cartList.innerHTML = "<li>سبد خرید شما خالی است.</li>";
-        return;
-      }
-      cart.forEach(item => {
-        const li = document.createElement("li");
-        li.textContent = `${item.name} - ${item.price} تومان`;
-        cartList.appendChild(li);
+        alert("✅ " + name + " به سبد خرید اضافه شد");
       });
-    }
-
-    renderCart();
-
-    // 🛒 ثبت سفارش
-    const form = document.getElementById("checkoutForm");
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const name = document.getElementById("name").value;
-      const phone = document.getElementById("phone").value;
-
-      if (cart.length === 0) {
-        alert("❌ سبد خرید شما خالی است");
-        return;
-      }
-
-      try {
-        await addDoc(collection(db, "orders"), {
-          name,
-          phone,
-          cart,
-          status: "جدید", // 🟢 وضعیت سفارش
-          createdAt: serverTimestamp()
-        });
-
-        alert("✅ سفارش شما ثبت شد! با شما تماس خواهیم گرفت.");
-        localStorage.removeItem("cart"); // پاک کردن سبد
-        window.location.href = "products.html"; // برگرده به فروشگاه
-      } catch (error) {
-        console.error("خطا در ثبت سفارش: ", error);
-        alert("⚠️ خطایی رخ داد، دوباره تلاش کنید.");
-      }
     });
   </script>
 </body>
