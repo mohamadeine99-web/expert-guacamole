@@ -62,50 +62,27 @@
       margin-bottom: 20px;
     }
 
-    /* انیمیشن برای تغییر رنگ و سایز فونت */
     @keyframes changeTextStyle {
-      0% {
-        color: white;
-        font-size: 1rem;
-      }
-      50% {
-        color: #000; /* مشکی */
-        font-size: 1.2rem; /* فونت بزرگتر */
-      }
-      100% {
-        color: white;
-        font-size: 1rem;
-      }
+      0% { color: white; font-size: 1rem; }
+      50% { color: #000; font-size: 1.2rem; }
+      100% { color: white; font-size: 1rem; }
     }
 
     .service h4, .service p {
       animation: changeTextStyle 2s ease-in-out infinite;
     }
 
-    /* برای نمایش بهتر در موبایل */
     @media (max-width: 768px) {
       .services {
         flex-direction: column;
         align-items: center;
       }
-
-      .service {
-        width: 80%;
-      }
+      .service { width: 80%; }
     }
 
-    body.night {
-      background-color: #2d2d2d;
-      color: #f3f4f6;
-    }
-
-    header.night {
-      background: #333;
-    }
-
-    footer.night {
-      background: #333;
-    }
+    body.night { background-color: #2d2d2d; color: #f3f4f6; }
+    header.night { background: #333; }
+    footer.night { background: #333; }
 
     #toggleThemeBtn {
       background-color: #2563eb;
@@ -117,15 +94,45 @@
       margin-top: 20px;
     }
 
-    /* دکمه تغییر فونت و رنگ */
-    .theme-settings {
-      margin-top: 20px;
-    }
-
+    .theme-settings { margin-top: 20px; }
     select, input[type="color"] {
       padding: 8px;
       margin: 5px;
       border-radius: 4px;
+    }
+
+    /* استایل بخش ارزها */
+    #currencyRates {
+      margin-top: 30px;
+      background: rgba(0,0,0,0.5);
+      padding: 20px;
+      border-radius: 8px;
+    }
+    #currencyRates h3 { color: #ffd700; }
+    #currencyRates ul { list-style: none; padding: 0; }
+    #currencyRates li { margin: 5px 0; }
+
+    /* دکمه نرخ ارز */
+    #currencyBtn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #ffd700;
+      color: #000;
+      font-size: 1.2rem;
+      padding: 15px 25px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      transition: 0.3s;
+      z-index: 1000;
+    }
+
+    #currencyBtn:hover {
+      background: #fbbf24;
+      transform: scale(1.1);
     }
   </style>
 
@@ -152,9 +159,36 @@
       colorPicker.addEventListener('input', function () {
         document.body.style.backgroundColor = colorPicker.value;
       });
+
+      // 📌 گرفتن نرخ ارز
+      async function getRates() {
+        try {
+          let response = await fetch("https://v6.exchangerate-api.com/v6/6bb032eaa9270ecb135e1c75/latest/USD");
+          let data = await response.json();
+
+          let ratesList = document.getElementById("ratesList");
+          ratesList.innerHTML = "";
+
+          let important = ["USD","EUR","GBP","JPY","CNY","IRR"];
+          important.forEach(code => {
+            let li = document.createElement("li");
+            li.textContent = `${code}: ${data.conversion_rates[code]}`;
+            ratesList.appendChild(li);
+          });
+        } catch (error) {
+          console.error("خطا در گرفتن داده‌ها", error);
+        }
+      }
+
+      getRates();
+      setInterval(getRates, 600000); // هر 10 دقیقه آپدیت بشه
+
+      // اسکرول به بخش ارزها
+      document.getElementById("currencyBtn").addEventListener("click", function() {
+        document.getElementById("currencyRates").scrollIntoView({ behavior: "smooth" });
+      });
     });
   </script>
-
 </head>
 <body>
 
@@ -189,6 +223,12 @@
       </div>
     </div>
 
+    <!-- بخش نرخ ارز -->
+    <div id="currencyRates">
+      <h3>💲 قیمت لحظه‌ای ارزها</h3>
+      <ul id="ratesList"></ul>
+    </div>
+
     <!-- فرم تماس با ما -->
     <h3>تماس با ما</h3>
     <form action="https://formspree.io/f/meorekzo" method="POST" class="contact-form">
@@ -218,6 +258,9 @@
   <footer>
     <p>&copy; 2025 YourSite - همه حقوق محفوظ است.</p>
   </footer>
+
+  <!-- دکمه نرخ ارز -->
+  <button id="currencyBtn">💲 نرخ ارز</button>
 
 </body>
 </html>
