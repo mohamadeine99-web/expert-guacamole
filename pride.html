@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>محصولات پراید — شایان</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>body{font-family:Vazirmatn,system-ui,sans-serif;background:#fff6f9;color:#0f172a} header{background:#0f172a;color:#fff;padding:12px;text-align:center}.product-img{height:120px;object-fit:contain}.add-btn{background:#16a34a;color:#fff;border:none;border-radius:6px;padding:8px 10px}.top-note{background:#fff3cd;border:1px solid #ffecb5;padding:12px;border-radius:8px}</style>
+</head>
+<body>
+  <header><h2>قطعات پراید</h2></header>
+  <main class="container py-4">
+    <div class="top-note mb-3 text-center"><strong>مشتری گرامی:</strong> محصول را انتخاب کنید؛ سپس به سبد خرید بروید.</div>
+    <div id="grid" class="row g-3"></div>
+    <div class="text-center mt-4">
+      <a class="btn btn-primary" href="cart.html">دیدن سبد خرید</a>
+      <a class="btn btn-secondary" href="index.html">بازگشت</a>
+    </div>
+  </main>
+
+<script>
+  const CAR_KEY="pride", CAR_NAME="پراید", CAR_ICON="https://cdn-icons-png.flaticon.com/512/7436/7436353.png";
+  const BASE_PARTS=["لنت ترمز","دیسک ترمز","صفحه و دیسک کلاچ","فیلتر هوا","فیلتر روغن","شمع","کمک فنر جلو","کمک فنر عقب","پلوس","دیسک چرخ","لاستیک یدکی","چراغ جلو","چراغ عقب","چراغ خطر","سپر جلو","سپر عقب","آینه بغل","درب جلو","درب عقب","رادیاتور","واتر پمپ","پمپ بنزین","تسمه تایم","میل سوپاپ","واشر سرسیلندر"];
+  function createProducts(){
+    const grid=document.getElementById("grid"); grid.innerHTML=""; let products=[];
+    while(products.length<50){ for(const b of BASE_PARTS){ if(products.length>=50) break; const i=products.length+1; products.push({id:`${CAR_KEY}-${i}`, title:`${CAR_NAME} — ${b} ${i}`, image:CAR_ICON, car:CAR_KEY}); } }
+    for(const p of products){ const col=document.createElement("div"); col.className="col-6 col-md-4 col-lg-3"; col.innerHTML=`<div class="card h-100"><div class="p-3 text-center"><img src="${p.image}" alt="${p.title}" class="product-img"></div><div class="card-body d-flex flex-column"><h6 class="card-title">${p.title}</h6><p class="small text-muted mb-2">کد: ${p.id}</p><div class="mt-auto"><button class="btn add-btn w-100" onclick="addToCart('${p.id}','${p.title}','${p.image}','${p.car}')">افزودن به سبد</button></div></div></div>`; grid.appendChild(col); }
+  }
+  function getCart(){ return JSON.parse(localStorage.getItem("shop_cart_v1")||"[]"); }
+  function saveCart(c){ localStorage.setItem("shop_cart_v1", JSON.stringify(c)); updateCount(); }
+  function addToCart(id,title,image,car){ const cart=getCart(); const found=cart.find(x=>x.id===id); if(found) found.qty++; else cart.push({id,title,image,car,qty:1}); saveCart(cart); alert("به سبد اضافه شد ✅"); }
+  function updateCount(){ const cart=getCart(); const count=cart.reduce((s,i)=>s+i.qty,0); document.title=`(${count}) ${CAR_NAME} — شایان`; }
+  createProducts(); updateCount();
+</script>
+</body>
+</html>
