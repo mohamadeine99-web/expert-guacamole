@@ -2,28 +2,37 @@
 <html lang="fa">
 <head>
   <meta charset="UTF-8">
-  <title>فروشگاه قطعات خودرو</title>
+  <title>تسویه حساب</title>
   <style>
-    body { font-family: sans-serif; background: #f9f9f9; padding: 20px; }
+    body { font-family: sans-serif; background: #f4f4f4; padding: 20px; }
     h1 { text-align: center; }
-    .products { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 20px; }
-    .card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 0 6px #aaa; text-align: center; }
-    img { max-width: 100%; border-radius: 5px; }
-    button { margin-top: 10px; background: green; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+    .cart { margin: 20px auto; max-width: 600px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 0 6px #aaa; }
+    ul { list-style: none; padding: 0; }
+    li { padding: 8px; border-bottom: 1px solid #ddd; }
+    form { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
+    input, button { padding: 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px; }
+    button { background: green; color: white; cursor: pointer; }
     button:hover { background: darkgreen; }
-    #cartLink { display: block; text-align: center; margin-top: 20px; font-weight: bold; }
   </style>
 </head>
 <body>
-  <h1>🛒 فروشگاه قطعات خودرو</h1>
-  <div class="products" id="products"></div>
+  <h1>🛍 تسویه حساب</h1>
 
-  <a href="checkout.html" id="cartLink">رفتن به سبد خرید</a>
+  <div class="cart">
+    <h3>سبد خرید شما</h3>
+    <ul id="cartList"></ul>
+  </div>
+
+  <form id="checkoutForm">
+    <input type="text" id="name" placeholder="نام شما" required>
+    <input type="tel" id="phone" placeholder="شماره تلفن" required>
+    <button type="submit">ثبت سفارش</button>
+  </form>
 
   <!-- Firebase SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     // 🟢 تنظیمات Firebase
     const firebaseConfig = {
@@ -39,38 +48,54 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // 🛒 مدیریت سبد خرید
-    function addToCart(product) {
-      let cart = JSON.parse(localStorage.getItem("cart")) || [];
-      cart.push(product);
-      localStorage.setItem("cart", JSON.stringify(cart));
-      alert("✅ محصول به سبد خرید اضافه شد");
-    }
+    // 📦 گرفتن سبد خرید
+    const cartList = document.getElementById("cartList");
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-    // 📦 لود محصولات از Firestore
-    async function loadProducts() {
-      const productsDiv = document.getElementById("products");
-      productsDiv.innerHTML = "";
-      const querySnapshot = await getDocs(collection(db, "products"));
-      querySnapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        const div = document.createElement("div");
-        div.classList.add("card");
-        div.innerHTML = `
-          <img src="${data.image}" alt="${data.name}">
-          <h3>${data.name}</h3>
-          <p>${data.desc}</p>
-          <p><strong>${data.price} تومان</strong></p>
-          <button>➕ افزودن به سبد خرید</button>
-        `;
-        div.querySelector("button").addEventListener("click", () => {
-          addToCart({ id: docSnap.id, name: data.name, price: data.price });
-        });
-        productsDiv.appendChild(div);
+    function renderCart() {
+      cartList.innerHTML = "";
+      if (cart.length === 0) {
+        cartList.innerHTML = "<li>سبد خرید شما خالی است.</li>";
+        return;
+      }
+      cart.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = `${item.name} - ${item.price} تومان`;
+        cartList.appendChild(li);
       });
     }
 
-    loadProducts();
+    renderCart();
+
+    // 🛒 ثبت سفارش
+    const form = document.getElementById("checkoutForm");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = document.getElementById("name").value;
+      const phone = document.getElementById("phone").value;
+
+      if (cart.length === 0) {
+        alert("❌ سبد خرید شما خالی است");
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "orders"), {
+          name,
+          phone,
+          cart,
+          status: "جدید", // 🟢 وضعیت سفارش
+          createdAt: serverTimestamp()
+        });
+
+        alert("✅ سفارش شما ثبت شد! با شما تماس خواهیم گرفت.");
+        localStorage.removeItem("cart"); // پاک کردن سبد
+        window.location.href = "products.html"; // برگرده به فروشگاه
+      } catch (error) {
+        console.error("خطا در ثبت سفارش: ", error);
+        alert("⚠️ خطایی رخ داد، دوباره تلاش کنید.");
+      }
+    });
   </script>
 </body>
 </html>
