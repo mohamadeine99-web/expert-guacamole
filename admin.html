@@ -2,46 +2,53 @@
 <html lang="fa">
 <head>
   <meta charset="UTF-8">
-  <title>مدیریت سایت</title>
+  <title>پنل مدیریت</title>
   <style>
-    body { font-family: sans-serif; background: #f4f4f4; text-align: center; }
-    #loginForm, #adminPanel { max-width: 500px; margin: 30px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 0 10px #ccc; }
-    input, button { padding: 10px; margin: 5px; width: 90%; }
+    body { font-family: sans-serif; background: #f0f0f0; padding: 20px; }
+    h2 { color: #333; }
+    .box { background: white; padding: 15px; margin: 15px 0; border-radius: 8px; box-shadow: 0 0 8px #ccc; }
+    input, textarea, button { width: 95%; margin: 8px 0; padding: 8px; border-radius: 6px; border: 1px solid #ccc; }
+    button { background: #007bff; color: white; border: none; cursor: pointer; }
+    button:hover { background: #0056b3; }
     ul { list-style: none; padding: 0; }
-    li { background: #eee; margin: 10px 0; padding: 10px; border-radius: 6px; text-align: left; }
-    button { cursor: pointer; }
-    .delete-btn { background: red; color: white; border: none; border-radius: 5px; padding: 5px 10px; }
-    .status-btn { background: blue; color: white; border: none; border-radius: 5px; padding: 5px 10px; margin-left: 10px; }
+    li { background: #fafafa; margin: 10px 0; padding: 10px; border-radius: 6px; }
+    img { max-width: 100px; display: block; margin: 5px 0; }
   </style>
 </head>
 <body>
+  <h1>⚙️ پنل مدیریت</h1>
 
-  <h1>مدیریت سایت</h1>
-
-  <!-- فرم ورود -->
-  <div id="loginForm">
-    <h2>ورود ادمین</h2>
-    <input type="email" id="email" placeholder="ایمیل ادمین">
-    <input type="password" id="password" placeholder="رمز عبور">
-    <button id="loginBtn">ورود</button>
-    <p id="loginError" style="color:red;"></p>
+  <!-- مدیریت محصولات -->
+  <div class="box">
+    <h2>➕ افزودن محصول</h2>
+    <form id="productForm">
+      <input type="text" id="pname" placeholder="نام محصول" required>
+      <textarea id="pdesc" placeholder="توضیحات محصول" required></textarea>
+      <input type="file" id="pimage" accept="image/*" required>
+      <button type="submit">ذخیره محصول</button>
+    </form>
+    <p id="productMsg"></p>
   </div>
 
-  <!-- پنل ادمین -->
-  <div id="adminPanel" style="display:none;">
-    <h2>لیست سفارش‌ها</h2>
+  <div class="box">
+    <h2>📦 لیست محصولات</h2>
+    <ul id="productsList"></ul>
+  </div>
+
+  <!-- مدیریت سفارش‌ها -->
+  <div class="box">
+    <h2>🛒 سفارش‌ها</h2>
     <ul id="ordersList"></ul>
   </div>
 
   <script type="module">
-    // --- ایمپورت Firebase ---
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, collection, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
-    // --- تنظیمات پروژه (اینجا config خودت رو بذار) ---
+    // --- تنظیمات پروژه خودت ---
     const firebaseConfig = {
-      apiKey: "AIza....", // 🔑 اینجا Web API Key خودت
+      apiKey: "AIza....", 
       authDomain: "mohamad-1473c.firebaseapp.com",
       projectId: "mohamad-1473c",
       storageBucket: "mohamad-1473c.appspot.com",
@@ -50,44 +57,73 @@
       measurementId: "G-DC0NQYPE3J"
     };
 
-    // --- راه‌اندازی Firebase ---
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
     const db = getFirestore(app);
+    const storage = getStorage(app);
 
-    // --- عناصر HTML ---
-    const loginForm = document.getElementById("loginForm");
-    const adminPanel = document.getElementById("adminPanel");
-    const loginBtn = document.getElementById("loginBtn");
-    const emailInput = document.getElementById("email");
-    const passInput = document.getElementById("password");
-    const loginError = document.getElementById("loginError");
-    const ordersList = document.getElementById("ordersList");
+    // 📌 افزودن محصول
+    const productForm = document.getElementById("productForm");
+    const productMsg = document.getElementById("productMsg");
+    const productsList = document.getElementById("productsList");
 
-    // --- ورود ادمین ---
-    loginBtn.addEventListener("click", async () => {
-      const email = emailInput.value;
-      const password = passInput.value;
+    productForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = document.getElementById("pname").value;
+      const desc = document.getElementById("pdesc").value;
+      const file = document.getElementById("pimage").files[0];
+
+      if (!file) return alert("لطفاً یک عکس انتخاب کنید!");
+
       try {
-        await signInWithEmailAndPassword(auth, email, password);
+        // 📤 آپلود عکس
+        const storageRef = ref(storage, "products/" + Date.now() + "-" + file.name);
+        await uploadBytes(storageRef, file);
+        const imageUrl = await getDownloadURL(storageRef);
+
+        // 📥 ذخیره در Firestore
+        await addDoc(collection(db, "products"), { name, desc, imageUrl });
+
+        productMsg.textContent = "✅ محصول با موفقیت اضافه شد.";
+        productForm.reset();
+        loadProducts();
       } catch (err) {
-        loginError.innerText = "❌ ایمیل یا رمز اشتباه است";
+        productMsg.textContent = "❌ خطا: " + err.message;
       }
     });
 
-    // --- بررسی ورود ---
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        loginForm.style.display = "none";
-        adminPanel.style.display = "block";
-        loadOrders();
-      } else {
-        loginForm.style.display = "block";
-        adminPanel.style.display = "none";
-      }
-    });
+    // 📌 نمایش محصولات
+    async function loadProducts() {
+      productsList.innerHTML = "";
+      const querySnapshot = await getDocs(collection(db, "products"));
+      querySnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <strong>${data.name}</strong><br>
+          ${data.desc}<br>
+          <img src="${data.imageUrl}" alt="${data.name}">
+          <button class="delete-btn">❌ حذف محصول</button>
+        `;
 
-    // --- بارگذاری سفارش‌ها ---
+        li.querySelector(".delete-btn").addEventListener("click", async () => {
+          if (confirm("آیا مطمئن هستی می‌خواهی این محصول حذف شود؟")) {
+            // حذف عکس از Storage
+            const imageRef = ref(storage, data.imageUrl);
+            try { await deleteObject(imageRef); } catch(e) { console.log("خطا در حذف عکس:", e.message); }
+
+            // حذف محصول از Firestore
+            await deleteDoc(doc(db, "products", docSnap.id));
+            loadProducts();
+          }
+        });
+
+        productsList.appendChild(li);
+      });
+    }
+    loadProducts();
+
+    // 📌 مدیریت سفارش‌ها
+    const ordersList = document.getElementById("ordersList");
     async function loadOrders() {
       ordersList.innerHTML = "";
       const querySnapshot = await getDocs(collection(db, "orders"));
@@ -98,13 +134,12 @@
         li.innerHTML = `
           <strong>${data.name}</strong> (${data.phone}) <br>
           محصولات: ${data.cart.map(i => i.name).join(", ")} <br>
-          وضعیت: <span style="color:blue">${data.status || "جدید"}</span>
+          وضعیت: <span style="color:blue">${data.status}</span>
           <br>
           <button class="delete-btn">❌ حذف</button>
           <button class="status-btn">🔄 تغییر وضعیت</button>
         `;
 
-        // دکمه حذف
         li.querySelector(".delete-btn").addEventListener("click", async () => {
           if (confirm("آیا مطمئن هستی می‌خواهی این سفارش حذف شود؟")) {
             await deleteDoc(doc(db, "orders", docSnap.id));
@@ -112,7 +147,6 @@
           }
         });
 
-        // دکمه تغییر وضعیت
         li.querySelector(".status-btn").addEventListener("click", async () => {
           let newStatus;
           if (data.status === "جدید") newStatus = "در حال پردازش";
@@ -126,6 +160,7 @@
         ordersList.appendChild(li);
       });
     }
+    loadOrders();
   </script>
 </body>
 </html>
