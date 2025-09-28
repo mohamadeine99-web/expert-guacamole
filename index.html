@@ -1,414 +1,172 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>YourSite — سایت کامل (نسخهٔ دموی شما)</title>
-  <meta name="description" content="سایت نمونه با قابلیت‌های پیشرفته: کاربران، بلاگ، فروشگاه، نرخ ارز/طلا، چت آنلاین و...">
-  <meta name="robots" content="index, follow" />
-
-  <!-- CONFIG: جای این‌ها رو در صورت نیاز تغییر بده -->
-  <script>
-    // ====== CONFIG ======
-    const EXCHANGE_API_KEY = "6bb032eaa9270ecb135e1c75"; // کلید Exchangerate (تو قبلاً دادی)
-    const CONTACT_ENDPOINT = "https://formspree.io/f/meorekzo"; // فرم اسپری endpoint تو
-    const TAWK_TO_SRC = ""; // اگر Tawk.to نصب کردی آدرس اسکریپت رو بذار، خالی باشه تِست میشه
-    // برای ارسال SMS واقعی: مشخصات سرویس پولی/ایرانی را اینجا وارد کن در بخش مربوطه
-    // ====================
-  </script>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>فروشگاه لوازم یدکی شایان</title>
   <style>
-    :root{--accent:#2563eb;--accent2:#ffd700;--bg:#f9fafb;--text:#111827}
-    html,body{height:100%;margin:0;font-family:Vazirmatn,system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
-    header{position:fixed;left:0;right:0;top:0;height:64px;background:rgba(17,24,39,0.9);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 18px;z-index:200}
-    header .logo{font-weight:700}
-    nav a{color:#fff;text-decoration:none;margin:0 10px}
-    main{max-width:1100px;margin:90px auto;padding:18px}
-    .hero{display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap}
-    .hero .left{flex:1;min-width:260px}
-    .hero h1{margin:0 0 10px;font-size:1.8rem}
-    .cta{background:var(--accent);color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none}
-    .card-row{display:flex;gap:12px;flex-wrap:wrap}
-    .card{background:#fff;padding:14px;border-radius:8px;box-shadow:0 8px 24px rgba(2,6,23,0.06);min-width:200px;flex:1}
-    .services{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
-    .service{background:linear-gradient(180deg,#fff,#f8fafc);padding:12px;border-radius:8px;flex:1;min-width:200px}
-    /* currency & metals */
-    .ratesWrapper{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
-    #currencyRates,#metalRates{background:rgba(255,255,255,0.95);padding:12px;border-radius:8px;min-width:240px;box-shadow:0 6px 18px rgba(2,6,23,0.06)}
-    #currencyRates ul,#metalRates ul{list-style:none;padding:8px;margin:0;display:flex;gap:8px;flex-wrap:wrap}
-    #currencyRates li,#metalRates li{background:var(--accent);color:#fff;padding:8px 10px;border-radius:8px;font-weight:600}
-    /* contact */
-    .contact-form{background:#fff;padding:14px;border-radius:8px;box-shadow:0 6px 18px rgba(2,6,23,0.06);margin-top:16px}
-    .contact-form input,.contact-form textarea{width:100%;padding:10px;border-radius:6px;border:1px solid #e5e7eb;margin-top:8px}
-    .contact-form button{background:var(--accent);color:#fff;padding:10px 12px;border:none;border-radius:6px;cursor:pointer;margin-top:10px}
-    /* user panel & admin */
-    #userPanel,#adminPanel{background:#fff;padding:12px;border-radius:8px;margin-top:12px}
-    .small{font-size:0.9rem;color:#6b7280}
-    /* fixed currency button */
-    #currencyBtn{position:fixed;bottom:22px;right:22px;background:var(--accent2);color:#000;border:none;padding:12px 18px;border-radius:999px;font-weight:700;cursor:pointer;z-index:120}
-    /* cart */
-    #cart{position:fixed;bottom:22px;left:22px;background:var(--accent);color:#fff;padding:10px 12px;border-radius:10px;z-index:120}
-    /* FAQ */
-    .faq-btn{width:100%;text-align:left;padding:10px;border-radius:8px;border:1px solid #e6e6e6;background:#fff;margin-top:8px}
-    .faq-panel{display:none;padding:10px;background:#fff;border-radius:8px;margin-top:6px}
-    /* responsive */
-    @media(max-width:800px){.hero{flex-direction:column}.card-row{flex-direction:column}}
-    /* dark theme */
-    body.dark{background:#071029;color:#e6eef8}
-    body.dark .card,body.dark .service,body.dark #currencyRates,body.dark #metalRates,body.dark .contact-form{background:#081025;color:#e6eef8;box-shadow:none}
+    body {
+      font-family: tahoma, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: url("esaco.jpg") no-repeat center center fixed;
+      background-size: cover;
+      direction: rtl;
+    }
+    header {
+      background: rgba(0,0,0,0.7);
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    header h1 {
+      margin: 0;
+    }
+    header p {
+      margin: 0.5rem 0 0;
+      font-size: 16px;
+      font-weight: bold;
+      color: #ffd700;
+    }
+    nav {
+      background: #111827;
+      padding: 0.5rem;
+      text-align: center;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 15px;
+      font-weight: bold;
+    }
+    main {
+      padding: 2rem;
+    }
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+    .product {
+      background: rgba(255,255,255,0.9);
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .product h4 {
+      margin: 10px 0;
+    }
+    .product button {
+      background: #2563eb;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .cart {
+      margin-top: 30px;
+      background: rgba(255,255,255,0.9);
+      padding: 15px;
+      border-radius: 8px;
+    }
+    footer {
+      background: #111827;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      margin-top: 2rem;
+    }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">YourSite</div>
-  <div>
-    <button id="themeToggle" title="تم">🌙</button>
-    <button id="loginBtn" title="ورود/ثبت‌نام">ورود</button>
-    <button id="adminOpen" title="پنل ادمین">ادمین</button>
-    <nav style="display:inline-block;margin-left:12px">
-      <a href="#services">خدمات</a>
-      <a href="#currencyRates">نرخ ارز</a>
-      <a href="#metalRates">طلا</a>
-      <a href="#contact">تماس</a>
-    </nav>
-  </div>
-</header>
+  <header>
+    <h1>فروشگاه لوازم یدکی شایان</h1>
+    <p>مشتری گرامی، محصول را انتخاب کنید؛ در کمترین زمان با شما تماس گرفته خواهد شد.</p>
+  </header>
 
-<main>
-  <!-- HERO -->
-  <section class="hero">
-    <div class="left">
-      <h1>سایت حرفه‌ای تو — سریع، شیک و کامل</h1>
-      <p class="small">طراحی وب، سئو، نمایش نرخ ارز/طلا، فروشگاه، ثبت‌نام کاربر و امکانات حرفه‌ای.</p>
-      <a id="ctaContact" class="cta" href="#contact">درخواست مشاوره</a>
-      <div class="small" style="margin-top:10px">آدرس سایت شما: <a target="_blank" href="https://mohamadeine99-web.github.io/expert-guacamole/">mohamadeine99-web.github.io/expert-guacamole</a></div>
-    </div>
-    <div class="right card">
-      <h3>خلاصه سریع</h3>
-      <div class="card-row">
-        <div class="card"><strong>واکنش‌گرا</strong><div class="small">موبایل و دسکتاپ</div></div>
-        <div class="card"><strong>سئو پایه</strong><div class="small">متا، structured data</div></div>
-        <div class="card"><strong>پشتیبانی</strong><div class="small">آپدیت و نگهداری</div></div>
+  <nav>
+    <a href="#products">محصولات</a>
+    <a href="#about">درباره ما</a>
+    <a href="#contact">تماس با ما</a>
+  </nav>
+
+  <main>
+    <section id="products">
+      <h2>محصولات</h2>
+      <div class="products">
+        <!-- نمونه محصولات - بدون قیمت -->
+        <div class="product">
+          <h4>دیسک ترمز پیکان</h4>
+          <button onclick="addToCart('دیسک ترمز پیکان')">افزودن به سبد</button>
+        </div>
+        <div class="product">
+          <h4>چراغ جلو پراید</h4>
+          <button onclick="addToCart('چراغ جلو پراید')">افزودن به سبد</button>
+        </div>
+        <div class="product">
+          <h4>صفحه کلاچ پژو 405</h4>
+          <button onclick="addToCart('صفحه کلاچ پژو 405')">افزودن به سبد</button>
+        </div>
+        <div class="product">
+          <h4>آینه بغل پژو 206</h4>
+          <button onclick="addToCart('آینه بغل پژو 206')">افزودن به سبد</button>
+        </div>
+        <div class="product">
+          <h4>کمک فنر رنو L90</h4>
+          <button onclick="addToCart('کمک فنر رنو L90')">افزودن به سبد</button>
+        </div>
       </div>
-    </div>
-  </section>
-
-  <!-- Services -->
-  <section id="services" class="services">
-    <div class="service"><h4>وب‌سایت شرکتی</h4><p>طراحی مدرن و امن</p></div>
-    <div class="service"><h4>فروشگاه آنلاین</h4><p>سبد خرید و پرداخت (پلاگین)</p></div>
-    <div class="service"><h4>سئو و محتوا</h4><p>تحقیق کلمات و بهینه‌سازی</p></div>
-  </section>
-
-  <!-- Rates & Metals -->
-  <div class="ratesWrapper">
-    <section id="currencyRates">
-      <h3>💲 نرخ ارز (لحظه‌ای)</h3>
-      <ul id="ratesList"><li>در حال بارگذاری...</li></ul>
-      <div class="small">آخرین آپدیت: <span id="ratesTime">--</span></div>
     </section>
 
-    <section id="metalRates">
-      <h3>💰 طلا و نقره (انس)</h3>
-      <ul id="metalsList"><li>در حال بارگذاری...</li></ul>
-      <div class="small">آخرین آپدیت: <span id="metalsTime">--</span></div>
+    <section class="cart" id="cart">
+      <h2>سبد خرید</h2>
+      <ul id="cart-items"></ul>
+      <button onclick="checkout()">ثبت سفارش</button>
     </section>
-  </div>
 
-  <!-- Blog (simple) -->
-  <section id="blog" style="margin-top:18px">
-    <h3>بلاگ</h3>
-    <div id="posts"></div>
-    <div class="small" style="margin-top:8px">برای افزودن پست جدید از پنل ادمین استفاده کن.</div>
-  </section>
+    <section id="about">
+      <h2>درباره ما</h2>
+      <p>پخش لوازم یدکی شایان به صورت جزئی و با تخفیف‌های عالی به مناسبت افتتاحیه.</p>
+    </section>
+  </main>
 
-  <!-- Testimonials -->
-  <section style="margin-top:18px">
-    <h3>نظرات مشتریان</h3>
-    <div class="card-row">
-      <div class="card">«بسیار عالی — کیفیت و سرعت خوب» — علی</div>
-      <div class="card">«پشتیبانی حرفه‌ای» — نرگس</div>
-    </div>
-  </section>
+  <footer id="contact">
+    <p>&copy; 2025 فروشگاه شایان - همه حقوق محفوظ است.</p>
+  </footer>
 
-  <!-- FAQ -->
-  <section style="margin-top:18px">
-    <h3>سوالات متداول</h3>
-    <button class="faq-btn">چقدر طول می‌کشد؟</button>
-    <div class="faq-panel">معمولاً ۳-۷ روز برای سایت ساده</div>
-    <button class="faq-btn">آیا پشتیبانی دارین؟</button>
-    <div class="faq-panel">بله — پلن‌های ماهانه داریم.</div>
-  </section>
+  <script>
+    let cart = [];
 
-  <!-- Contact -->
-  <section id="contact" style="margin-top:18px">
-    <h3>📨 تماس با ما</h3>
-    <form id="contactForm" class="contact-form" method="POST" action="">
-      <input name="name" placeholder="نام" required />
-      <input name="email" type="email" placeholder="ایمیل" required />
-      <input name="phone" placeholder="تلفن (اختیاری)" />
-      <textarea name="message" rows="4" placeholder="پیام" required></textarea>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button type="submit">ارسال پیام</button>
-        <button type="button" id="subscribeBtn">عضویت در خبرنامه</button>
-      </div>
-      <p id="contactResult" style="display:none;margin-top:8px;color:green"></p>
-    </form>
-  </section>
-
-  <!-- user panel -->
-  <section id="userSection" style="margin-top:18px">
-    <h3>پنل کاربری</h3>
-    <div id="userPanel" class="small">هنوز وارد نشده‌اید — <button id="openLogin">ورود / ثبت‌نام</button></div>
-  </section>
-
-  <!-- admin panel (simple) -->
-  <section id="adminSection" style="margin-top:18px;display:none">
-    <h3>پنل ادمین (نمونه)</h3>
-    <div id="adminPanel">
-      <label>رمز ادمین (پیش‌فرض: admin123)</label>
-      <input id="adminPass" type="password"/>
-      <button id="adminLoginBtn">ورود ادمین</button>
-      <hr/>
-      <h4>مدیریت پست‌ها</h4>
-      <input id="postTitle" placeholder="عنوان پست" />
-      <textarea id="postBody" rows="3" placeholder="متن پست"></textarea><br/>
-      <button id="addPostBtn">افزودن پست</button>
-      <div id="adminPosts" style="margin-top:10px"></div>
-    </div>
-  </section>
-
-  <footer style="margin-top:28px">© 2025 YourSite — همه حقوق محفوظ است.</footer>
-</main>
-
-<!-- fixed action buttons -->
-<button id="currencyBtn">💲 نرخ ارز</button>
-<button id="cart">🛒 سبد (<span id="cartCount">0</span>)</button>
-
-<!-- Chat (Tawk.to) - if you have Tawk script, paste into TAWK_TO_SRC above -->
-<!-- Example Tawk snippet (disabled by default). If you have Tawk id, insert it here. -->
-<!-- <script src="https://embed.tawk.to/your_tawk_id/default"></script> -->
-
-<script>
-/* =================== APP LOGIC =================== */
-/* Helpers */
-const el=id=>document.getElementById(id);
-const fmt=n=>typeof n==='number'? n.toLocaleString():n;
-
-/* CONFIG from earlier (EXCHANGE_API_KEY, CONTACT_ENDPOINT) are global */
-const EXCHANGE_KEY = typeof EXCHANGE_API_KEY !== 'undefined' ? EXCHANGE_API_KEY : "";
-const CONTACT_EP = typeof CONTACT_ENDPOINT !== 'undefined' ? CONTACT_ENDPOINT : "";
-
-/* ========== Rates ========== */
-async function fetchRates(){
-  const ul = el("ratesList");
-  ul.innerHTML = "<li>در حال بارگذاری...</li>";
-  try{
-    if(!EXCHANGE_KEY) throw new Error("API key missing");
-    const url = `https://v6.exchangerate-api.com/v6/${EXCHANGE_KEY}/latest/USD`;
-    const r = await fetch(url);
-    const data = await r.json();
-    if(data.result !== "success") throw new Error("API error");
-    ul.innerHTML = "";
-    const show = ["USD","EUR","GBP","JPY","CNY","IRR","TRY","AUD","CAD"];
-    show.forEach(c=>{
-      const li = document.createElement("li");
-      li.textContent = `${c}: ${fmt(data.conversion_rates[c])}`;
-      ul.appendChild(li);
-    });
-    el("ratesTime").textContent = data.time_last_update_utc || new Date().toUTCString();
-  }catch(e){
-    console.error(e);
-    ul.innerHTML = "<li>خطا در دریافت نرخ‌ها</li>";
-    el("ratesTime").textContent = "--";
-  }
-}
-
-/* ========== Metals ========== */
-async function fetchMetals(){
-  const ul = el("metalsList");
-  ul.innerHTML = "<li>در حال بارگذاری...</li>";
-  try{
-    // free public endpoint (no key)
-    const r = await fetch("https://api.metals.live/v1/spot");
-    const data = await r.json();
-    ul.innerHTML = "";
-    const goldObj = data.find(it=>it.gold!==undefined);
-    const silverObj = data.find(it=>it.silver!==undefined);
-    const gold = goldObj?.gold ?? "N/A";
-    const silver = silverObj?.silver ?? "N/A";
-    const gLi = document.createElement("li"); gLi.textContent = `طلا (انس): ${fmt(gold)} USD`; ul.appendChild(gLi);
-    const sLi = document.createElement("li"); sLi.textContent = `نقره (انس): ${fmt(silver)} USD`; ul.appendChild(sLi);
-    el("metalsTime").textContent = new Date().toUTCString();
-  }catch(e){
-    console.error(e);
-    ul.innerHTML = "<li>خطا در دریافت قیمت طلا/نقره</li>";
-    el("metalsTime").textContent = "--";
-  }
-}
-
-/* ========== Blog (localStorage) ========== */
-function loadPosts(){
-  const posts = JSON.parse(localStorage.getItem("posts_v1")||"[]");
-  const container = el("posts"); container.innerHTML="";
-  posts.slice().reverse().forEach((p,i)=>{
-    const div = document.createElement("div");
-    div.className="card"; div.style.marginTop="8px";
-    div.innerHTML = `<h4>${p.title}</h4><p class="small">${p.body}</p>`;
-    container.appendChild(div);
-  });
-  // admin view
-  const adminPosts = el("adminPosts"); if(adminPosts){ adminPosts.innerHTML=""; posts.forEach((p,idx)=>{ const d=document.createElement("div"); d.className="small"; d.innerHTML=`${p.title} <button data-idx="${idx}" class="delPost">حذف</button>`; adminPosts.appendChild(d); });}
-}
-function addPost(title,body){
-  const posts = JSON.parse(localStorage.getItem("posts_v1")||"[]");
-  posts.push({title,body,date:new Date().toISOString()});
-  localStorage.setItem("posts_v1",JSON.stringify(posts));
-  loadPosts();
-}
-
-/* ========== User auth (localStorage simple) ========== */
-function currentUser(){ return JSON.parse(localStorage.getItem("user_v1")||"null"); }
-function setUser(u){ localStorage.setItem("user_v1", JSON.stringify(u)); renderUserPanel(); }
-function logout(){ localStorage.removeItem("user_v1"); renderUserPanel(); }
-function renderUserPanel(){
-  const up = el("userPanel");
-  const user = currentUser();
-  if(!user){ up.innerHTML = `هنوز وارد نشده‌اید — <button id="openLogin2">ورود / ثبت‌نام</button>`; el("openLogin2")?.addEventListener("click", openLoginModal); el("openLogin")?.addEventListener("click", openLoginModal); }
-  else {
-    up.innerHTML = `<div>خوش آمدی، <strong>${user.name}</strong> — ایمیل: ${user.email}<br/><button id="logoutBtn">خروج</button></div>`;
-    el("logoutBtn").addEventListener("click", logout);
-  }
-}
-
-/* simple login/signup modal (prompt-based to keep single-file) */
-function openLoginModal(){
-  const action = prompt("ورود یا ثبت‌نام؟ (login/signup) — تایپ کن login یا signup");
-  if(!action) return;
-  if(action.toLowerCase()==="signup"){
-    const name = prompt("نام خود را وارد کنید:");
-    const email = prompt("ایمیل شما:");
-    const phone = prompt("شماره تلفن (اختیاری):");
-    // OPTIONAL: phone verification (mock)
-    if(!email || !name){ alert("نام و ایمیل لازم است"); return; }
-    // save to localStorage
-    setUser({name, email, phone});
-    alert("ثبت‌نام انجام شد (نمونه). خوش آمدید!");
-  } else {
-    const email = prompt("ایمیل خود را وارد کنید:");
-    if(!email) return;
-    // check existing (simple)
-    const u = currentUser();
-    if(u && u.email === email){ setUser(u); alert("وارد شدید!"); }
-    else {
-      // for demo, allow quick login by entering name
-      const name = prompt("حالا نام خود را وارد کن تا وارد شوی (demo)");
-      setUser({name, email, phone:""});
-      alert("وارد شدی (demo).");
+    function addToCart(product) {
+      cart.push(product);
+      updateCart();
     }
-  }
-}
 
-/* ========== Admin quick (insecure demo) ========== */
-function openAdmin(){
-  const pass = prompt("رمز ادمین را وارد کنید (demo: admin123)");
-  if(pass !== "admin123"){ alert("رمز اشتباه"); return; }
-  // show admin section
-  el("adminSection").style.display = "block";
-  // wire admin actions
-  el("addPostBtn").addEventListener("click", ()=>{ const t=el("postTitle").value; const b=el("postBody").value; if(!t||!b){alert("عنوان و متن لازم است")}else{ addPost(t,b); el("postTitle").value=""; el("postBody").value=""; alert("پست اضافه شد"); }});
-  el("adminPosts").addEventListener("click", (e)=>{ if(e.target.classList.contains("delPost")){ const idx = e.target.dataset.idx; const posts=JSON.parse(localStorage.getItem("posts_v1")||"[]"); posts.splice(idx,1); localStorage.setItem("posts_v1",JSON.stringify(posts)); loadPosts(); }});
-}
+    function updateCart() {
+      let cartList = document.getElementById("cart-items");
+      cartList.innerHTML = "";
+      cart.forEach(item => {
+        let li = document.createElement("li");
+        li.textContent = item;
+        cartList.appendChild(li);
+      });
+    }
 
-/* ========== Cart (local demo) ========== */
-function cartCount(){ const c=JSON.parse(localStorage.getItem("cart_v1")||"[]"); return c.length; }
-function updateCartUI(){ el("cartCount").textContent = cartCount(); }
-function addToCart(item){ const c=JSON.parse(localStorage.getItem("cart_v1")||"[]"); c.push(item); localStorage.setItem("cart_v1",JSON.stringify(c)); updateCartUI(); }
-
-/* ========== Newsletter (demo) ========== */
-function subscribeDemo(){
-  const email = prompt("ایمیل خود را برای خبرنامه وارد کنید:");
-  if(!email) return alert("ایمیل لازم است");
-  // In production: POST to Mailchimp or Brevo
-  alert("با موفقیت ثبت شد (دمو). در نسخه واقعی باید Mailchimp/Brevo را وصل کنید.");
-}
-
-/* ========== Contact form handling (Formspree) ========== */
-document.addEventListener("submit", async function(e){
-  if(e.target && e.target.id === "contactForm"){
-    e.preventDefault();
-    const form = e.target;
-    const data = new FormData(form);
-    try{
-      if(CONTACT_EP){
-        const res = await fetch(CONTACT_EP, { method:"POST", body: data, headers:{ 'Accept':'application/json' } });
-        if(res.ok){ el("contactResult").style.display="block"; el("contactResult").textContent = "ارسال شد — ممنون!"; form.reset(); }
-        else { el("contactResult").style.display="block"; el("contactResult").textContent = "خطا در ارسال (Formspree)"; }
-      } else {
-        // demo: store locally
-        const saved = JSON.parse(localStorage.getItem("messages_v1")||"[]");
-        saved.push(Object.fromEntries(data.entries()).concat? data : Object.fromEntries(data.entries()));
-        localStorage.setItem("messages_v1", JSON.stringify(saved));
-        el("contactResult").style.display="block"; el("contactResult").textContent = "پیام ذخیره شد (محلی، demo).";
-        form.reset();
+    function checkout() {
+      if (cart.length === 0) {
+        alert("سبد خرید خالی است.");
+        return;
       }
-    }catch(err){ console.error(err); el("contactResult").style.display="block"; el("contactResult").textContent = "خطا در ارسال"; }
-  }
-});
-
-/* ========== UI wiring ========== */
-document.addEventListener("DOMContentLoaded", function(){
-  // load rates & metals
-  fetchRates(); fetchMetals();
-  setInterval(fetchRates, 600000);
-  setInterval(fetchMetals, 600000);
-
-  // currency button scroll
-  el("currencyBtn").addEventListener("click", ()=> el("currencyRates").scrollIntoView({behavior:"smooth"}));
-  el("cart").addEventListener("click", ()=>{ const c = JSON.parse(localStorage.getItem("cart_v1")||"[]"); alert("سبد شما (demo):\\n" + JSON.stringify(c)); });
-
-  // theme toggle
-  el("themeToggle").addEventListener("click", ()=> document.body.classList.toggle("dark"));
-
-  // login
-  el("loginBtn").addEventListener("click", openLoginModal);
-  el("openLogin")?.addEventListener("click", openLoginModal);
-
-  // admin
-  el("adminOpen").addEventListener("click", openAdmin);
-
-  // subscribe demo
-  el("subscribeBtn").addEventListener("click", subscribeDemo);
-
-  // faq accordion
-  document.querySelectorAll(".faq-btn").forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      const panel = btn.nextElementSibling;
-      panel.style.display = (panel.style.display === "block") ? "none" : "block";
-    });
-  });
-
-  // user panel
-  renderUserPanel();
-
-  // load blog posts
-  loadPosts();
-
-  // register notification permission (ask user)
-  if("Notification" in window){
-    if(Notification.permission === "default"){
-      // ask politely
-      setTimeout(()=>{ if(confirm("آیا تمایل به دریافت اعلان‌های مرورگر برای بروزرسانی‌ها داری؟")) Notification.requestPermission(); }, 3000);
+      let phone = prompt("لطفاً شماره تلفن خود را وارد کنید:");
+      if (phone) {
+        let message = `سفارش جدید:%0A${cart.join("، ")}%0Aشماره مشتری: ${phone}`;
+        window.open(`https://wa.me/989918263754?text=${message}`, "_blank");
+      }
     }
-  }
+  </script>
 
-}); // DOMContentLoaded
-
-/* ========== Optional: register service worker for simple PWA caching ========= */
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('sw.js').then(()=>console.log('sw registered')).catch(()=>console.warn('sw failed'));
-}
-</script>
 </body>
 </html>
